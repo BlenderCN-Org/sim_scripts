@@ -1,0 +1,151 @@
+import random
+import bpy
+
+LAUNCH_FILE = '/home/bbrieber/spawn_all_da_trees.launch'
+CSV_FILE = '/home/bbrieber/da_trees.cvs'
+WORLD_FILE = '/home/bbrieber/da.world'
+GROUP = 'Forest'
+
+template_header = '<?xml version="1.0"?>\n\n<launch>\n'
+template_footer = '\n</launch>\n'
+
+template_world_header = """<?xml version="1.0" ?>
+<sdf version="1.4">
+  <world name="sherpa_world">
+  <light type="directional" name="sun">
+    <cast_shadows>true</cast_shadows>
+
+    <pose>0 0 1000 0 0 0</pose>
+    <diffuse>0.8 0.8 0.8 1</diffuse>
+    <specular>0.2 0.2 0.2 1</specular>
+
+    <attenuation>
+      <range>3000</range>
+      <constant>0.9</constant>
+      <linear>0.01</linear>
+      <quadratic>0.001</quadratic>
+    </attenuation>
+
+    <direction>-0.5 0.1 -0.9</direction>
+  </light>
+
+  <include>
+      <uri>model://sherpa_avalange_description</uri>
+    </include>
+    <include>
+      <uri>model://sherpa_mountains</uri>
+    </include>
+"""
+template_world_footer = """                                                                                                                                                                                                                                                          
+  <gui>
+     <camera name="mountain_camera">
+       <pose>-183.43 -236 13.5 0 0 1.57</pose>
+     </camera>
+  </gui>
+  </world>
+</sdf>
+"""
+
+template_tree = """
+<include file="$(find sherpa_fir{0})launch/spawn_sherpa_fir{0}.launch">
+    <arg name="x" value="{1}"/>
+    <arg name="y" value="{2}"/>
+    <arg name="z" value="{3}"/>
+    <arg name="Y" value="{4}"/>
+</include>
+"""
+
+
+template_tree_world = """
+<include>
+    <uri>model://sherpa_fir{0}</uri>
+    <name>tree_{5}</name>
+    <pose>{1} {2} {3} 0 0 {4}</pose>
+</include>
+"""
+
+template_tree2 = """sherpa_fir{0},{1},{2},{3},{4}\n"""
+
+def create_tree(loc, file, file2, file3,num):
+    t = random.randint(1,3)
+    Y = random.random()
+    file.write(template_tree.format(t,loc.x,loc.y,loc.z-0.2,Y))
+    file2.write(template_tree2.format(t,loc.x,loc.y,loc.z-0.2,Y))
+    file3.write(template_tree_world.format(t,loc.x,loc.y,loc.z-0.2,Y,num))
+    
+    
+def create_launchfile():
+    file = open(LAUNCH_FILE,'w')
+    file2 = open(CSV_FILE,'w')    
+    file3 = open(WORLD_FILE,'w')
+
+    file.write(template_header)
+    file3.write(template_world_header)
+    i = 0
+    for o in bpy.data.groups[GROUP].objects:
+        i += 1
+        create_tree(o.location,file,file2,file3,i)
+    file.write(template_footer)
+    file3.write(template_world_footer)
+    file.close()
+    file2.close()
+    file3.close()
+  
+sem_temp="%i,%s,%0.2f,%0.2f,%0.2f,%0.2f,%0.2f,%0.2f,%0.2f,%0.2f,%0.2f,%0.2f,%0.2f,%0.2f,%0.2f,%0.2f,%0.2f,%0.2f,%0.2f,%0.2f,%0.2f,%i\n"
+#tmp % (
+#    i,
+#    o.data.name,
+#    0.1,0.1,0.1,
+#    mat[0][0],mat[0][1],mat[0][2],mat[0][3],
+#    mat[1][0],mat[1][1],mat[1][2],mat[1][3],
+#    mat[2][0],mat[2][1],mat[2][2],mat[2][3],
+#    mat[3][0],mat[3][1],mat[3][2],mat[3][3],
+#    0)
+#template_sem = """{},{},{:.2},{:.2},{:.2},{:.2},{:.2},{:.2},{:.2},{:.2},{:.2},{:.2},{:.2},{:.2},{:.2},{:.2},{:.2},{:.2},{:.2},{:.2}\n"""
+
+def create_semantic_file():
+    semfile = open('/home/bbrieber/sem.csv','w')
+    i = 0
+    for o in bpy.data.groups['Export_objs'].objects:
+        i += 1
+        mat = o.matrix_world
+        tmp = sem_temp % (i,
+            o.data.name, 
+            0.1,0.1,0.1, 
+#            mat[0][0],mat[1][0],mat[2][0],mat[3][0], 
+#            mat[0][1],mat[1][1],mat[2][1],mat[3][1],
+#            mat[0][2],mat[1][2],mat[2][2],mat[3][2],
+#            mat[0][3],mat[1][3],mat[2][3],mat[3][3],
+            mat[0][0],mat[0][1],mat[0][2],mat[0][3],
+            mat[1][0],mat[1][1],mat[1][2],mat[1][3], 
+            mat[2][0],mat[2][1],mat[2][2],mat[2][3], 
+            mat[3][0],mat[3][1],mat[3][2],mat[3][3], 
+            0)
+        semfile.write(tmp)
+    semfile.close()
+    
+    
+    
+def create_path_files():
+    #semfile = open('/home/bbrieber/sem.csv','w')
+    i = 0
+    for o in bpy.data.groups['Path'].objects:        
+        with open('/home/bbrieber/tmp.path','w') as f:
+            #extract vertices
+            f.write("[vert]\n")
+            for v in o.data.vertices:
+                tmp = "%i,%f,%f,%f\n" % (v.index,v.co[0],v.co[0],v.co[0])
+                f.write(tmp)
+            #extract edges
+            f.write("[edges]\n")
+            for e in o.data.edges:
+                tmp = "%i,%i,%i\n" % (e.index,e.vertices[0],e.vertices[1])
+                f.write(tmp)
+        #f.close()                
+        
+       
+#create_launchfile()
+#create_semantic_file()
+create_path_files()
+    
+    
