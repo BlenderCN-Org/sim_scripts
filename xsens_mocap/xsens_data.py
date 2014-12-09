@@ -1,6 +1,6 @@
-from struct import *
+from struct import unpack
 
-class xsens_header:
+class XSensHeader:
   
   def __init__(self,input):
     #data = unpack('>6sibbib7s','\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
@@ -44,4 +44,33 @@ class xsens_header:
   def isSingleDatagram(self):
     return self.datagramm_counter != 0x80
 
+MVN_QUAT_SIZE = 32
+class XSensQuatSegment():
+  """
+  This class represents an XSens Datagram Element
+  currently only quaternions are supported
+  """
+  
+  def __init__(self, data):
+    """
+    """
+    self.id , self.x , self.y , self.z , self.re , self.i , self.j , self.k= unpack('>ifffffff',data[:MVN_QUAT_SIZE])
+    self.position = (self.x , self.y , self.z)
+    self.quat = ( self.i , self.j, self.k , self.re )
+    
 
+class XSensMessage():
+  """This class represents a complete XSens message
+  """
+  
+  def __init__(self, header,segments):
+    """
+    
+    Arguments:
+    - `header`:
+    - `segments`:
+    """
+    self._header = header
+    self._segments = segments
+
+  

@@ -1,21 +1,17 @@
-#!/usr/bin/env python
-# Author: Benjamin Brieber
-
-import subject
-from xsens_data import xsens_header
-
 import socket
-import threading
-import signal
-import sys
-#from struct import *
 
-class MvnListener():
 
+from xsens_data import XSensHeader, XSensQuatSegment, XSensMessage
+
+class MvnStreamReader():
+    """
+    This is the abstract meta class for all incoming network streams from MVN studio.
+    
+    
+    """
     def __init__(self,ip='127.0.0.1',port=9763):
-        #Subject.__init__(self)
-        #threading.Thread.__init_(self)
         self._udp_ip = ip
+
         self._udp_port = port
 
 
@@ -26,10 +22,20 @@ class MvnListener():
         print('done')
 
 
-    
+    def get_message(self):
+        recv_data =  self._sock.recv(4096)
+        header  = XSensHeader(recv_data)
+        segments = []
+        current_position = 25
+        for n in range(header.number_of_items):
+             segments.append(XSensQuatSegment(recv_data[current_position:]))
+             current_position += 32
+        return XSensMessage(header, segments)
+        
+        
     def read_data(self):
-        recv_data = self._sock.recv(4096)
-        header = xsens_header(recv_data)
+        recv_data = self.get_message()
+        header = recv_data.header
         if header.isQuaternion():
             self.handle_quaternion(recv_data)
         elif header.isEuler():
@@ -78,47 +84,3 @@ class MvnListener():
 
     def clean_up(self):
         print("count: "+self.count)
-
-class MvnFilewriter(MvnListener):
-
-    def __init__(self,output, ip='127.0.0.1',port=9763):
-        MvnListener.__init__(self,ip,port)
-        self._output = output
-
-
-    
-    def handle_quaternion(self,data):
-        if len(data) != 760:
-            print("wtf")
-        self._output.write(data)
-        
-
-running = 1
-
-
-def main():
-    with open("xsens.xcap",'wb') as output:
-        client = MvnFilewriter(output=output, ip='192.168.100.212',port=9763)
-        client.connect()
-        while 1:
-            client.read_data()
-        client.clean_up()
-    
-
-#client.connect()
-#  threads.append(client)
-#  client.start()
-
-def signal_handler(signal, frame):
-        print 'You pressed Ctrl+C!\nterminating'
-        running = 0
-#        for t in threads:
-#	  t.join()
-#        sys.exit(0)
-
-if __name__ == "__main__":
-  #signal.signal(signal.SIGINT, signal_handler)
-    try:
-        main()
-    except KeyboardInterrupt:
-        running = 0
