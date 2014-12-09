@@ -2,7 +2,7 @@
 # Author: Benjamin Brieber
 
 
-from mvn_streamreader import MvnStreamReader
+from xsens_mocap.mvn_streamreader import MvnStreamReader
 
 
 class MvnFileWriter(MvnStreamReader):

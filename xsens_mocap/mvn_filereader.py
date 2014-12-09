@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from mvn_streamreader import MvnStreamReader
-from xsens_data import XSensHeader, XSensQuatSegment, XSensMessage
+from xsens_mocap.mvn_streamreader import MvnStreamReader
+from xsens_mocap.xsens_data import XSensHeader, XSensQuatSegment, XSensMessage
 
 MVN_HEADER_SIZE = 24
 MVN_QUAT_SIZE = 32

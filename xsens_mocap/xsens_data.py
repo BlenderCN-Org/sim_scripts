@@ -17,13 +17,13 @@ class XSensHeader:
     self.avatar_id = data[16]
     self.free = data[17:23]
     
-  def print_header(self):
-    print 'id:\t\t{0}\n'.format(self.id)
-    print 'sample:\t{0}\n'.format(self.sample_counter)
-    print 'datagramms:\t{0}\n'.format(self.datagramm_counter)
-    print 'items:\t\t{0}\n'.format(self.number_of_items)
-    print 'time:\t\t{0}\n'.format(self.time_code)
-    print 'avatar_id:\t\t{0}\n'.format(self.avatar_id)
+#  def print_header(self):
+#    print 'id:\t\t{0}\n'.format(self.id)
+#    print 'sample:\t{0}\n'.format(self.sample_counter)
+#    print 'datagramms:\t{0}\n'.format(self.datagramm_counter)
+#    print 'items:\t\t{0}\n'.format(self.number_of_items)
+#    print 'time:\t\t{0}\n'.format(self.time_code)
+#    print 'avatar_id:\t\t{0}\n'.format(self.avatar_id)
       
   def isQuaternion(self):
     return self.id[-2:] == '02'

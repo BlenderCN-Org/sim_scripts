@@ -1,7 +1,7 @@
 import socket
 
 
-from xsens_data import XSensHeader, XSensQuatSegment, XSensMessage
+from xsens_mocap.xsens_data import XSensHeader, XSensQuatSegment, XSensMessage
 
 class MvnStreamReader():
     """
