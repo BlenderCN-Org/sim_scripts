@@ -1,3 +1,6 @@
+IMPORTANT MAKE THE Sream reader correct only pass te ricght amount of bytes
+
+
 add parser to all __main__ args
 
 add support for other datagrams

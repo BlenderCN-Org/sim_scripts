@@ -5,6 +5,7 @@ class XSensHeader:
   def __init__(self,input):
     #data = unpack('>6sibbib7s','\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00')
     #data = unpack('>6sibbib7s',input[:23])
+    self.data = input
     self.id , self.sample_counter , self.datagramm_counter , self.number_of_items , self.time_code , self.avatar_id , self.free = unpack('>6sibbib7s',input[:24])
 
   def tmp_back(self,data):
@@ -54,6 +55,7 @@ class XSensQuatSegment():
   def __init__(self, data):
     """
     """
+    self.data = data
     self.id , self.x , self.y , self.z , self.re , self.i , self.j , self.k= unpack('>ifffffff',data[:MVN_QUAT_SIZE])
     self.position = (self.x , self.y , self.z)
     self.quat = ( self.i , self.j, self.k , self.re )
@@ -72,5 +74,5 @@ class XSensMessage():
     """
     self._header = header
     self._segments = segments
-
+    
   

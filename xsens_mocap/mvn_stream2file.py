@@ -18,7 +18,9 @@ class MvnFileWriter(MvnStreamReader):
     def handle_quaternion(self,data):
         if len(data) != 760:
             print("wtf")
-        self._output.write(data)
+        self._output.write(data.header)
+        for seg in data.segments:
+            self._output.write(seg)
         
 
 running = True

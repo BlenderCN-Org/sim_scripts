@@ -25,10 +25,12 @@ class MvnStreamReader():
     def get_message(self):
         recv_data =  self._sock.recv(4096)
         header  = XSensHeader(recv_data)
+        #header  = XSensHeader(recv_data[:25])####TEST this line
         segments = []
         current_position = 25
         for n in range(header.number_of_items):
              segments.append(XSensQuatSegment(recv_data[current_position:]))
+             #segments.append(XSensQuatSegment(recv_data[current_position:current_position+32])) ##TODO test this line
              current_position += 32
         return XSensMessage(header, segments)
         
