@@ -20,4 +20,4 @@ msg_gen
 bin
 .classpath
 .project
-
+!__init__.py
