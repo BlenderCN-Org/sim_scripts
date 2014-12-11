@@ -6,7 +6,7 @@ import rospy
 from semantic_map_to_owl.srv import *
 from semantic_map_to_owl.msg import *
 
-def create_owl_from_csv(outfile_name='/home/bbrieber/sherpa_tmp.owl',infile_name='/home/bbrieber/sem.csv'):
+def create_owl_from_csv(outfile_name='/home/bbrieber/sherpa_tmp2.owl',infile_name='/home/bbrieber/sem.csv'):
     rospy.wait_for_service('/knowrob_semantic_map_to_owl/generate_owl_map')
     try:
 	generate_map = rospy.ServiceProxy('/knowrob_semantic_map_to_owl/generate_owl_map', GenerateSemanticMapOWL)
