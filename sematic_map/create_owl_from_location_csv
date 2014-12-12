@@ -1,0 +1,72 @@
+#!/usr/bin/python
+
+
+import sys
+import rospy
+from semantic_map_to_owl.srv import *
+from semantic_map_to_owl.msg import *
+
+def create_owl_from_location+_csv(outfile_name='/home/bbrieber/sherpa_tmp2.owl',infile_name='/home/bbrieber/sem.csv',type='tree'):
+    rospy.wait_for_service('/knowrob_semantic_map_to_owl/generate_owl_map')
+    try:
+	generate_map = rospy.ServiceProxy('/knowrob_semantic_map_to_owl/generate_owl_map', GenerateSemanticMapOWL)
+	map = SemMap()
+	infile = open(infile_name,'r')
+	objs = infile.readlines()
+	for raw_obj in objs:
+	    cnt = raw_obj.split(',')
+	    obj = SemMapObject()
+	    obj.id=int(cnt[0])
+	    obj.type = type
+	    obj.width = 1.0
+	    obj.depth = 1.0
+	    obj.height = 1.0
+        obj.pose.append(1)
+        obj.pose.append(0)
+        obj.pose.append(0)
+        obj.pose.append(cnt[1])
+
+        obj.pose.append(0)
+        obj.pose.append(1)
+        obj.pose.append(0)
+        obj.pose.append(cnt[2])
+
+        obj.pose.append(0)
+        obj.pose.append(0)
+        obj.pose.append(1)
+        obj.pose.append(cnt[3])
+
+        obj.pose.append(0)
+        obj.pose.append(0)
+        obj.pose.append(0)
+        obj.pose.append(1)
+
+	    obj.partOf = 0
+	    map.objects.append(obj)
+	map.header.stamp = rospy.Time.now()
+	resp = generate_map(map)
+	  
+	infile.close()
+
+	resp =generate_map(map)
+	outfile = open(outfile_name,'w')
+	outfile.write(resp.owlmap)
+	outfile.close()
+	#return resp1.sum
+    except rospy.ServiceException, e:
+	print "Service call failed: %s"%e
+
+def usage():
+    return "%s [x y]"%sys.argv[0]
+
+if __name__ == "__main__":
+    rospy.init_node('sem_map_creator')
+    #if len(sys.argv) == 3:
+#
+#        x = int(sys.argv[1])
+#        y = int(sys.argv[2])
+    #else:
+    #    print usage()
+    #    sys.exit(1)
+    #print "Requesting %s+%s"%(x, y)
+    create_owl_from_location_csv()
