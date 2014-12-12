@@ -21,25 +21,22 @@ def create_owl_from_location_csv(outfile_name='/home/bbrieber/sherpa_tmp2.owl',i
 	    obj.width = 1.0
 	    obj.depth = 1.0
 	    obj.height = 1.0
-        obj.pose.append(1)
-        obj.pose.append(0)
-        obj.pose.append(0)
-        obj.pose.append(cnt[1])
-
-        obj.pose.append(0)
-        obj.pose.append(1)
-        obj.pose.append(0)
-        obj.pose.append(cnt[2])
-
-        obj.pose.append(0)
-        obj.pose.append(0)
-        obj.pose.append(1)
-        obj.pose.append(cnt[3])
-
-        obj.pose.append(0)
-        obj.pose.append(0)
-        obj.pose.append(0)
-        obj.pose.append(1)
+	    obj.pose.append(1)
+	    obj.pose.append(0)
+	    obj.pose.append(0)
+	    obj.pose.append(cnt[1])
+	    obj.pose.append(0)
+	    obj.pose.append(1)
+	    obj.pose.append(0)
+	    obj.pose.append(cnt[2])
+	    obj.pose.append(0)
+	    obj.pose.append(0)
+	    obj.pose.append(1)
+	    obj.pose.append(cnt[3])
+	    obj.pose.append(0)
+	    obj.pose.append(0)
+	    obj.pose.append(0)
+	    obj.pose.append(1)
 
 	    obj.partOf = 0
 	    map.objects.append(obj)
